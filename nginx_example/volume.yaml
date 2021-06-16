@@ -5,16 +5,16 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: webserver
+      app: nginx
   replicas: 1
   template:
     metadata:
       labels:
-        app: webserver
+        app: nginx
     spec:
       containers:
       - name: nginx
-        image: nginx
+        image: nginx:1.14.2
         ports:
         - containerPort: 80
         volumeMounts:
@@ -23,5 +23,23 @@ spec:
       volumes:
       - name: shared-data
         hostPath:
-          path: /shared
+          path: /home/yoon/Workspace/k8sstudy/shared
           type: Directory
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: nginx
